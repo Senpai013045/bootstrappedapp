@@ -130,18 +130,27 @@ let templates = {
     </div>
   </div>
     `,
+  loggedInNav: `
+    <li class="nav-item">
+    <a href="#" class="nav-link"><i class="far fa-user"></i> Account</a>
+    </li>
+    `,
 };
 
 let formWrapper = document.querySelector(".form-wrapper");
 let main = document.querySelector("main.container");
+let nav = document.querySelector(".navbar-nav");
 
 auth.onAuthStateChanged((user) => {
   if (user) {
     main.innerHTML = templates.posts;
     formWrapper.innerHTML = "";
+    nav.innerHTML = templates.loggedInNav;
+    //make sure to reset on else
   } else {
     main.innerHTML = "";
     formWrapper.innerHTML = templates.signupForm;
+    nav.innerHTML = "";
   }
 });
 
