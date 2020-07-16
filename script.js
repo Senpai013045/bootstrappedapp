@@ -131,32 +131,58 @@ let templates = {
   </div>
     `,
   loggedInNav: `
-    <li class="nav-item">
-    <a href="#" class="nav-link"><i class="far fa-user"></i> Account</a>
-    </li>
+  <li class="nav-item dropdown dropleft">
+  <a
+    href="#"
+    class="nav-link dropdown-toggle"
+    type="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded="false"
+    ><i class="far fa-user"></i> <span id="display-name"></span></a
+  >
+  <div class="dropdown-menu bg-dark position-absolute" aria-labelledby="account">
+    <span class="dropdown-item-text text-light" id="display-email"></span>
+    <button class="btn btn-secondary btn-sm" id="signout">Sign out</button>
+  </div>
+</li>
     `,
 };
 
 let formWrapper = document.querySelector(".form-wrapper");
 let main = document.querySelector("main.container");
 let nav = document.querySelector(".navbar-nav");
-
 auth.onAuthStateChanged((user) => {
   if (user) {
     main.innerHTML = templates.posts;
     formWrapper.innerHTML = "";
     nav.innerHTML = templates.loggedInNav;
+    nav.querySelector("#display-email").textContent = user.email;
+    //handling display name from database
+    db.collection("users")
+      .doc(user.uid)
+      .get()
+      .then((doc) => {
+        nav.querySelector("#display-name").textContent = doc.data().displayName;
+      });
+
+    //user email wont have to be reset since nav.innerHTML automatically goes empty when not logged in
+
+    //handle signout
+    nav.addEventListener("click", (e) => {
+      if (e.target.getAttribute("id") === "signout") {
+        auth.signOut();
+        location.reload();
+        //without reload..theres a bug in sign up in firebase
+      }
+    });
+
     //make sure to reset on else
   } else {
     main.innerHTML = "";
     formWrapper.innerHTML = templates.signupForm;
     nav.innerHTML = "";
   }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  formWrapper.innerHTML = templates.signupForm;
-  //this is printing
 });
 
 //tabbing the forms
@@ -184,7 +210,9 @@ formWrapper.addEventListener("submit", (e) => {
           e.target["signup-password"].value
         )
         .then((cred) => {
-          console.log(cred.user.email);
+          return db.collection("users").doc(cred.user.uid).set({
+            displayName: e.target["display"].value,
+          });
         })
         .catch((err) => {
           e.target.querySelector(".error-handler").innerHTML = err.message;
@@ -199,7 +227,6 @@ formWrapper.addEventListener("submit", (e) => {
     auth
       .signInWithEmailAndPassword(e.target["login-email"].value, e.target["login-password"].value)
       .then((cred) => {
-        console.log(cred.user.email);
         e.target.querySelector(".error-handler").innerHTML = "";
       })
       .catch((err) => {

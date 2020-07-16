@@ -16,3 +16,10 @@ form {
 h5.display-4 {
   font-size: 2rem;
 }
+#signout {
+  display: inline-block;
+  margin-left: 29%;
+}
+.dropleft .dropdown-toggle::before {
+  content: none;
+}
