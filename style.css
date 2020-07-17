@@ -23,3 +23,15 @@ h5.display-4 {
 .dropleft .dropdown-toggle::before {
   content: none;
 }
+ul.navbar-nav {
+  flex-direction: row;
+}
+ul.navbar-nav > li {
+  padding: 0px 10px;
+}
+ul.navbar-nav > li:hover {
+  background-color: rgba(0, 0, 0, 0.144);
+}
+#createPost {
+  width: 100%;
+}

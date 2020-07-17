@@ -49,87 +49,7 @@ let templates = {
       >
     </form>
     `,
-  posts: `
-    <div class="card mb-4">
-    <div class="card-header">
-      A beautiful header(text-limited)
-    </div>
-    <div class="card-body">
-      <blockquote class="blockquote mb-0">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
-        </p>
-        <footer class="blockquote-footer">
-          Subham01 <cite title="Source Title">Admin</cite>
-        </footer>
-      </blockquote>
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="card-header">
-      Something informative
-    </div>
-    <div class="card-body">
-      <blockquote class="blockquote mb-0">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
-        </p>
-        <footer class="blockquote-footer">
-          Jemy <cite title="Source Title">Moderator</cite>
-        </footer>
-      </blockquote>
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="card-header">
-      How to use Vue js
-    </div>
-    <div class="card-body">
-      <blockquote class="blockquote mb-0">
-        <p class="text-truncate">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ut aspernatur vel aliquam
-          reiciendis quam quasi doloremque autem et eius odio?
-        </p>
-        <footer class="blockquote-footer">Kuzuri <cite title="Source Title">User</cite></footer>
-      </blockquote>
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="card-header">
-      How to use Vue js
-    </div>
-    <div class="card-body">
-      <blockquote class="blockquote mb-0">
-        <p class="text-truncate">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ut aspernatur vel aliquam
-          reiciendis quam quasi doloremque autem et eius odio?
-        </p>
-        <footer class="blockquote-footer">Kuzuri <cite title="Source Title">User</cite></footer>
-      </blockquote>
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="card-header">
-      How to use Vue js
-    </div>
-    <div class="card-body">
-      <blockquote class="blockquote mb-0">
-        <p class="text-truncate">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ut aspernatur vel aliquam
-          reiciendis quam quasi doloremque autem et eius odio?
-        </p>
-        <footer class="blockquote-footer">Kuzuri <cite title="Source Title">User</cite></footer>
-      </blockquote>
-    </div>
-  </div>
-    `,
+  posts: "",
   loggedInNav: `
   <li class="nav-item dropdown dropleft">
   <a
@@ -139,12 +59,17 @@ let templates = {
     data-toggle="dropdown"
     aria-haspopup="true"
     aria-expanded="false"
-    ><i class="far fa-user"></i> <span id="display-name"></span></a
-  >
+    ><i class="far fa-user"></i> <span id="display-name"></span
+  ></a>
   <div class="dropdown-menu bg-dark position-absolute" aria-labelledby="account">
     <span class="dropdown-item-text text-light" id="display-email"></span>
     <button class="btn btn-secondary btn-sm" id="signout">Sign out</button>
   </div>
+</li>
+<li class="nav-item">
+  <a href="#" class="nav-link" data-toggle="modal" data-target="#modal-post"
+    ><i class="far fa-paper-plane"></i> Post</a
+  >
 </li>
     `,
 };
@@ -152,6 +77,12 @@ let templates = {
 let formWrapper = document.querySelector(".form-wrapper");
 let main = document.querySelector("main.container");
 let nav = document.querySelector(".navbar-nav");
+let createPost = document.querySelector("form#createPost");
+
+function dateParser(num) {
+  let date = new Date(num);
+  return date.toDateString();
+}
 auth.onAuthStateChanged((user) => {
   if (user) {
     main.innerHTML = templates.posts;
@@ -164,6 +95,70 @@ auth.onAuthStateChanged((user) => {
       .get()
       .then((doc) => {
         nav.querySelector("#display-name").textContent = doc.data().displayName;
+        //can handle database handling here as we have access to all data required
+        createPost.addEventListener("submit", (e) => {
+          e.preventDefault();
+          console.log(
+            createPost["post-title"].value,
+            createPost["post-body"].value,
+            new Date().getTime()
+          );
+          db.collection("posts")
+            .add({
+              author: user.uid,
+              title: createPost["post-title"].value,
+              body: createPost["post-body"].value,
+              time: Number(new Date().getTime()),
+            })
+            .then((res) => {
+              createPost.querySelector(".error-handler").innerHTML = "";
+              $("#modal-post").modal("hide");
+            })
+            .catch((err) => {
+              createPost.querySelector(".error-handler").innerHTML = err.message;
+            });
+        });
+      });
+    //db loading
+    db.collection("posts")
+      .orderBy("time", "asc")
+      .onSnapshot((snapshot) => {
+        let changes = snapshot.docChanges();
+        changes.forEach((change) => {
+          if (change.type === "added") {
+            //load the doc in the template
+            // change.doc.data() is the object that has our data
+            let docID = change.doc.id;
+            let data = change.doc.data();
+
+            db.collection("users")
+              .doc(data.author)
+              .get()
+              .then((doc) => {
+                console.log();
+                main.innerHTML =
+                  `
+              <div class="card mb-4" data-id=${docID}>
+              <div class="card-header">
+                ${data.title}
+              </div>
+              <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                  <p>
+                    ${data.body}
+                  </p>
+                  <footer class="blockquote-footer">
+                    ${doc.data().displayName} <cite title="${new Date(
+                    data.time
+                  ).toTimeString()}">${dateParser(data.time)}</cite>
+                  </footer>
+                </blockquote>
+              </div>
+            </div>
+              ` + main.innerHTML;
+              });
+          }
+        });
       });
 
     //user email wont have to be reset since nav.innerHTML automatically goes empty when not logged in

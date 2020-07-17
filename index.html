@@ -30,6 +30,42 @@
       </div>
     </nav>
 
+    <div class="modal fade" id="modal-post">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="text-center">
+              Create a post
+            </h5>
+          </div>
+
+          <div class="modal-body">
+            <form id="createPost">
+              <div class="form-group">
+                <label for="post-title">Title</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  id="post-title"
+                  maxlength="50"
+                  placeholder="Max length is 50 characters"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="post-body">Body</label>
+                <textarea class="form-control" id="post-body" rows="3" required></textarea>
+              </div>
+              <small class="form-text text-danger error-handler"></small>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button class="btn btn-primary" id="post" form="createPost">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="container form-wrapper"></div>
 
     <!-- the main content -->
