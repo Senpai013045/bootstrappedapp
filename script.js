@@ -79,9 +79,18 @@ let main = document.querySelector("main.container");
 let nav = document.querySelector(".navbar-nav");
 let createPost = document.querySelector("form#createPost");
 
-function dateParser(num) {
-  let date = new Date(num);
-  return date.toDateString();
+function timeHandler(timems) {
+  //that timems is time in milliseconds of GMT
+  let d = new Date();
+  let offset = d.getTimezoneOffset();
+  let GMTms = d.getTime() + offset;
+  let date = new Date(timems).toLocaleDateString();
+  let time = new Date(timems).toLocaleTimeString();
+  return {
+    GMTms: GMTms,
+    time: time,
+    date: date,
+  };
 }
 auth.onAuthStateChanged((user) => {
   if (user) {
@@ -104,7 +113,7 @@ auth.onAuthStateChanged((user) => {
               author: user.uid,
               title: createPost["post-title"].value,
               body: createPost["post-body"].value,
-              time: Number(new Date(new Date().toUTCString()).getTime()),
+              time: Number(timeHandler().GMTms),
             })
             .then((res) => {
               createPost.reset();
@@ -145,9 +154,9 @@ auth.onAuthStateChanged((user) => {
                     ${data.body}
                   </p>
                   <footer class="blockquote-footer">
-                    ${doc.data().displayName} <cite title="${new Date(
-                    data.time
-                  ).toTimeString()}">${dateParser(data.time)}</cite>
+                    ${doc.data().displayName} <cite title="${timeHandler(data.time).time}">${
+                    timeHandler(data.time).date
+                  }</cite>
                   </footer>
                 </blockquote>
               </div>
