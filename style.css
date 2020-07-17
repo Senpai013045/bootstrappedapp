@@ -32,3 +32,9 @@ ul.navbar-nav > li:hover {
 #createPost {
   width: 100%;
 }
+@media only screen and (max-width: 576px) {
+  #switchToLogin {
+    clear: both;
+    float: left;
+  }
+}
