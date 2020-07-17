@@ -104,7 +104,7 @@ auth.onAuthStateChanged((user) => {
               author: user.uid,
               title: createPost["post-title"].value,
               body: createPost["post-body"].value,
-              time: Number(new Date().toUTCString().getTime()),
+              time: Number(new Date(new Date().toUTCString()).getTime()),
             })
             .then((res) => {
               createPost.reset();
