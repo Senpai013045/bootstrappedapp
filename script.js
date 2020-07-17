@@ -111,6 +111,7 @@ auth.onAuthStateChanged((user) => {
               time: Number(new Date().getTime()),
             })
             .then((res) => {
+              createPost.reset();
               createPost.querySelector(".error-handler").innerHTML = "";
               $("#modal-post").modal("hide");
             })
