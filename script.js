@@ -98,17 +98,13 @@ auth.onAuthStateChanged((user) => {
         //can handle database handling here as we have access to all data required
         createPost.addEventListener("submit", (e) => {
           e.preventDefault();
-          console.log(
-            createPost["post-title"].value,
-            createPost["post-body"].value,
-            new Date().getTime()
-          );
+
           db.collection("posts")
             .add({
               author: user.uid,
               title: createPost["post-title"].value,
               body: createPost["post-body"].value,
-              time: Number(new Date().getTime()),
+              time: Number(new Date().toUTCString().getTime()),
             })
             .then((res) => {
               createPost.reset();
