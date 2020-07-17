@@ -1,7 +1,7 @@
 let templates = {
   signupForm: `
     <h5 class="text-center display-4">Sign up</h5>
-    <form id="signup">
+    <form id="signup" class="col-sm-12 col-md-8 col-lg-6">
     <div class="from-group">
       <label for="signup-email">Email Adress</label>
       <input type="email" id="signup-email" class="form-control" required />
@@ -32,7 +32,7 @@ let templates = {
     `,
   loginForm: `
     <h5 class="text-center display-4">Log in</h5>
-    <form id="login">
+    <form id="login" class="col-sm-12 col-md-8 col-lg-6">
       <div class="from-group">
         <label for="login-email">Email Adress</label>
         <input type="email" id="login-email" class="form-control" required />
