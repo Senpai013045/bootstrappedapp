@@ -82,7 +82,7 @@ let createPost = document.querySelector("form#createPost");
 function timeHandler(timems) {
   //that timems is time in milliseconds of GMT
   let d = new Date();
-  let offset = d.getTimezoneOffset();
+  let offset = d.getTimezoneOffset() * 60 * 1000;
   let GMTms = d.getTime() + offset;
   let date = new Date(timems).toLocaleDateString();
   let time = new Date(timems).toLocaleTimeString();
