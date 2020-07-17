@@ -84,8 +84,8 @@ function timeHandler(timems) {
   let d = new Date();
   let offset = d.getTimezoneOffset() * 60 * 1000;
   let GMTms = d.getTime() + offset;
-  let date = new Date(timems).toLocaleDateString();
-  let time = new Date(timems).toLocaleTimeString();
+  let date = new Date(timems - offset).toLocaleDateString();
+  let time = new Date(timems - offset).toLocaleTimeString();
   return {
     GMTms: GMTms,
     time: time,
