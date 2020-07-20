@@ -112,6 +112,9 @@
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
       const db = firebase.firestore();
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      });
     </script>
     <script src="script.js"></script>
   </body>

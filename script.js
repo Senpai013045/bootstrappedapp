@@ -79,19 +79,15 @@ let main = document.querySelector("main.container");
 let nav = document.querySelector(".navbar-nav");
 let createPost = document.querySelector("form#createPost");
 
-function timeHandler(timems) {
-  //that timems is time in milliseconds of GMT
-  let d = new Date();
-  let offset = d.getTimezoneOffset() * 60 * 1000;
-  let GMTms = d.getTime() + offset;
-  let date = new Date(timems - offset).toLocaleDateString();
-  let time = new Date(timems - offset).toLocaleTimeString();
+//geting timestamp and changing to local time
+function timeHandler(firebaseTimeStamp) {
+  let date = firebaseTimeStamp.toDate();
   return {
-    GMTms: GMTms,
-    time: time,
-    date: date,
+    date: date.toLocaleDateString(),
+    time: date.toLocaleTimeString(),
   };
 }
+
 auth.onAuthStateChanged((user) => {
   if (user) {
     main.innerHTML = templates.posts;
@@ -113,7 +109,7 @@ auth.onAuthStateChanged((user) => {
               author: user.uid,
               title: createPost["post-title"].value,
               body: createPost["post-body"].value,
-              time: Number(timeHandler().GMTms),
+              time: firebase.firestore.FieldValue.serverTimestamp(),
             })
             .then((res) => {
               createPost.reset();
@@ -154,9 +150,9 @@ auth.onAuthStateChanged((user) => {
                     ${data.body}
                   </p>
                   <footer class="blockquote-footer">
-                    ${doc.data().displayName} <cite title="${timeHandler(data.time).time}">${
+                    ${doc.data().displayName} <cite class="mr-1">${
                     timeHandler(data.time).date
-                  }</cite>
+                  }</cite><cite>${timeHandler(data.time).time}</cite>
                   </footer>
                 </blockquote>
               </div>
@@ -224,6 +220,7 @@ formWrapper.addEventListener("submit", (e) => {
   }
   //login
   if (e.target.getAttribute("id") === "login") {
+    e.preventDefault();
     //handle login here
     auth
       .signInWithEmailAndPassword(e.target["login-email"].value, e.target["login-password"].value)
