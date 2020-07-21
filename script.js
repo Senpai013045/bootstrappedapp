@@ -81,7 +81,12 @@ let createPost = document.querySelector("form#createPost");
 
 //geting timestamp and changing to local time
 function timeHandler(firebaseTimeStamp) {
-  let date = firebaseTimeStamp.toDate();
+  let date;
+  if (firebaseTimeStamp) {
+    date = firebaseTimeStamp.toDate();
+  } else {
+    date = new Date();
+  }
   return {
     date: date.toLocaleDateString(),
     time: date.toLocaleTimeString(),
@@ -132,12 +137,15 @@ auth.onAuthStateChanged((user) => {
             // change.doc.data() is the object that has our data
             let docID = change.doc.id;
             let data = change.doc.data();
+            if (!data.time) {
+              data.time = null;
+            }
 
             db.collection("users")
               .doc(data.author)
               .get()
               .then((doc) => {
-                console.log();
+                console.log(data.time);
                 main.innerHTML =
                   `
               <div class="card mb-4" data-id=${docID}>
@@ -152,7 +160,7 @@ auth.onAuthStateChanged((user) => {
                   <footer class="blockquote-footer">
                     ${doc.data().displayName} <cite class="mr-1">${
                     timeHandler(data.time).date
-                  }</cite><cite>${timeHandler(data.time).time}</cite>
+                  }</cite><cite>${timeHandler(data.time).time}</cite> 
                   </footer>
                 </blockquote>
               </div>
@@ -162,6 +170,8 @@ auth.onAuthStateChanged((user) => {
           }
         });
       });
+    {
+    }
 
     //user email wont have to be reset since nav.innerHTML automatically goes empty when not logged in
 
