@@ -35,6 +35,10 @@ ul.navbar-nav > li:hover {
 #createPost {
   width: 100%;
 }
+main {
+  display: flex;
+  flex-direction: column;
+}
 @media only screen and (max-width: 576px) {
   #switchToLogin,
   #switchToSignup {

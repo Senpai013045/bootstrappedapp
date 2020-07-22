@@ -157,7 +157,7 @@ auth.onAuthStateChanged((user) => {
             // change.doc.data() is the object that has our data
             let docID = change.doc.id;
             let data = change.doc.data();
-            console.log(data.title);
+            console.log(data.title, change.newIndex);
             if (!data.time) {
               data.time = null;
             }
@@ -168,6 +168,7 @@ auth.onAuthStateChanged((user) => {
                 let card = document.createElement("div");
                 card.classList.add("card", "mb-4");
                 card.dataset.id = docID;
+                card.style.order = -change.newIndex;
                 card.innerHTML = `
                 <div class="card-header">
                 ${data.title}
