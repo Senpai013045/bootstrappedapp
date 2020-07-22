@@ -71,13 +71,20 @@ let templates = {
     ><i class="far fa-paper-plane"></i> Post</a
   >
 </li>
+<li class="nav-item" id="chatLoader">
+  <a href="#" class="nav-link"><i class="far fa-comments"></i> Chat</a
+  >
+</li>
     `,
+  chats: "",
 };
 
 let formWrapper = document.querySelector(".form-wrapper");
 let main = document.querySelector("main.container");
 let nav = document.querySelector(".navbar-nav");
 let createPost = document.querySelector("form#createPost");
+let chats = document.querySelector("div.chats");
+let brand = document.querySelector("a.navbar-brand");
 
 //geting timestamp and changing to local time
 function timeHandler(firebaseTimeStamp) {
@@ -87,6 +94,7 @@ function timeHandler(firebaseTimeStamp) {
   } else {
     date = new Date();
   }
+  console.log(date);
   return {
     date: date.toLocaleDateString(),
     time: date.toLocaleTimeString(),
@@ -126,6 +134,19 @@ auth.onAuthStateChanged((user) => {
             });
         });
       });
+    //chat handler
+    nav.addEventListener("click", (e) => {
+      if (e.target.getAttribute("id") === "chatLoader") {
+        main.style.display = "none";
+        chats.innerHTML = templates.chats;
+      }
+    });
+    //hub switching
+    brand.addEventListener("click", (e) => {
+      e.preventDefault();
+      chats.style.display = "none";
+      main.style.display = "block";
+    });
     //db loading
     db.collection("posts")
       .orderBy("time", "asc")
@@ -137,15 +158,15 @@ auth.onAuthStateChanged((user) => {
             // change.doc.data() is the object that has our data
             let docID = change.doc.id;
             let data = change.doc.data();
+            console.log(data);
             if (!data.time) {
               data.time = null;
             }
-
             db.collection("users")
               .doc(data.author)
               .get()
               .then((doc) => {
-                console.log(data.time);
+                // console.log(data.time);
                 main.innerHTML =
                   `
               <div class="card mb-4" data-id=${docID}>

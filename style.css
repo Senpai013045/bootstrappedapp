@@ -29,6 +29,9 @@ ul.navbar-nav > li {
 ul.navbar-nav > li:hover {
   background-color: rgba(0, 0, 0, 0.144);
 }
+#chatLoader > a {
+  pointer-events: none;
+}
 #createPost {
   width: 100%;
 }
