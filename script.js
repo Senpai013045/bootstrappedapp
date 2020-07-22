@@ -94,7 +94,6 @@ function timeHandler(firebaseTimeStamp) {
   } else {
     date = new Date();
   }
-  console.log(date);
   return {
     date: date.toLocaleDateString(),
     time: date.toLocaleTimeString(),
@@ -158,7 +157,7 @@ auth.onAuthStateChanged((user) => {
             // change.doc.data() is the object that has our data
             let docID = change.doc.id;
             let data = change.doc.data();
-            console.log(data);
+            console.log(data.title);
             if (!data.time) {
               data.time = null;
             }
@@ -166,11 +165,11 @@ auth.onAuthStateChanged((user) => {
               .doc(data.author)
               .get()
               .then((doc) => {
-                // console.log(data.time);
-                main.innerHTML =
-                  `
-              <div class="card mb-4" data-id=${docID}>
-              <div class="card-header">
+                let card = document.createElement("div");
+                card.classList.add("card", "mb-4");
+                card.dataset.id = docID;
+                card.innerHTML = `
+                <div class="card-header">
                 ${data.title}
               </div>
               <div class="card-body">
@@ -180,13 +179,13 @@ auth.onAuthStateChanged((user) => {
                   </p>
                   <footer class="blockquote-footer">
                     ${doc.data().displayName} <cite class="mr-1">${
-                    timeHandler(data.time).date
-                  }</cite><cite>${timeHandler(data.time).time}</cite> 
+                  timeHandler(data.time).date
+                }</cite><cite>${timeHandler(data.time).time}</cite>
                   </footer>
                 </blockquote>
               </div>
-            </div>
-              ` + main.innerHTML;
+                `;
+                main.insertBefore(card, main.childNodes[0]);
               });
           }
         });
