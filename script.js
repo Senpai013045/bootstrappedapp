@@ -51,7 +51,7 @@ let templates = {
     `,
   posts: "",
   loggedInNav: `
-  <li class="nav-item dropdown dropleft">
+  <li class="nav-item dropdown">
   <a
     href="#"
     class="nav-link dropdown-toggle"
