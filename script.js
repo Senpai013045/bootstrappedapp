@@ -172,6 +172,11 @@ auth.onAuthStateChanged((user) => {
                 card.innerHTML = `
                 <div class="card-header">
                 ${data.title}
+                ${
+                  user.uid === data.author
+                    ? `<i class="fas fa-trash float-right btn btn-danger" id="delete"></i>`
+                    : ``
+                }
               </div>
               <div class="card-body">
                 <blockquote class="blockquote mb-0">
@@ -188,6 +193,10 @@ auth.onAuthStateChanged((user) => {
                 `;
                 main.insertBefore(card, main.childNodes[0]);
               });
+          }
+          if (change.type === "removed") {
+            let card = document.querySelector(`div[data-id="${change.doc.id}"]`);
+            main.removeChild(card);
           }
         });
       });
@@ -260,6 +269,22 @@ formWrapper.addEventListener("submit", (e) => {
       })
       .catch((err) => {
         e.target.querySelector(".error-handler").innerHTML = err.message;
+      });
+  }
+});
+
+//delete feature
+main.addEventListener("click", (e) => {
+  if (e.target.getAttribute("id") === "delete") {
+    let docID = e.target.parentElement.parentElement.dataset.id;
+    db.collection("posts")
+      .doc(docID)
+      .delete()
+      .then((res) => {
+        console.log("delete successful");
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 });
