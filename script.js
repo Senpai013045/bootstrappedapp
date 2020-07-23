@@ -144,7 +144,7 @@ auth.onAuthStateChanged((user) => {
     brand.addEventListener("click", (e) => {
       e.preventDefault();
       chats.style.display = "none";
-      main.style.display = "block";
+      main.style.display = "flex";
     });
     //db loading
     db.collection("posts")
