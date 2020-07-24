@@ -76,7 +76,14 @@ let templates = {
   >
 </li>
     `,
-  chats: "",
+  chats: `
+    <form id="sendMessage">
+    <div class="input-group">
+    <input type="text" class="form-control" placeholder="chat message">
+    <button type="submit" class="btn btn-primary">Send</button>
+    </div>
+    </form>
+  `,
 };
 
 let formWrapper = document.querySelector(".form-wrapper");
@@ -105,6 +112,9 @@ auth.onAuthStateChanged((user) => {
     main.innerHTML = templates.posts;
     formWrapper.innerHTML = "";
     nav.innerHTML = templates.loggedInNav;
+    chats.innerHTML = templates.chats;
+    chats.style.display = "none";
+    chats.scrollTop = chats.scrollHeight;
     nav.querySelector("#display-email").textContent = user.email;
     //handling display name from database
     db.collection("users")
@@ -137,7 +147,7 @@ auth.onAuthStateChanged((user) => {
     nav.addEventListener("click", (e) => {
       if (e.target.getAttribute("id") === "chatLoader") {
         main.style.display = "none";
-        chats.innerHTML = templates.chats;
+        chats.style.display = "flex";
       }
     });
     //hub switching
@@ -200,8 +210,65 @@ auth.onAuthStateChanged((user) => {
           }
         });
       });
-    {
-    }
+    //receiving texts
+    db.collection("global")
+      .orderBy("time", "asc")
+      .onSnapshot((snapshot) => {
+        let changes = snapshot.docChanges();
+        changes.forEach((change) => {
+          if (change.type === "added") {
+            let docID = change.doc.id;
+            let data = change.doc.data();
+            console.log(data.message, change.newIndex);
+            if (!data.time) {
+              data.time = null;
+            }
+            db.collection("users")
+              .doc(data.sender)
+              .get()
+              .then((doc) => {
+                console.log(doc.data().displayName);
+                //render this to doc
+                let chatBubble = document.createElement("div");
+                chatBubble.dataset.id = docID;
+
+                if (data.sender === user.uid) {
+                  chatBubble.classList.add("chat-bubble", "sent");
+                } else {
+                  chatBubble.classList.add("chat-bubble", "received");
+                }
+
+                chatBubble.innerHTML = `
+        <span class="message">${data.message}</span>
+        <br/>
+        <cite class="float-right">-${doc.data().displayName}</cite>
+                
+                `;
+                chats.insertBefore(chatBubble, chats.querySelector("form"));
+                chats.scrollTop = chats.scrollHeight;
+              });
+          }
+        });
+      });
+    //send message for chat
+    chats.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (e.target.getAttribute("id") === "sendMessage") {
+        let input = e.target.querySelector("input");
+        db.collection("global")
+          .add({
+            message: input.value,
+            sender: user.uid,
+            time: firebase.firestore.FieldValue.serverTimestamp(),
+          })
+          .then((res) => {
+            e.target.reset();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
 
     //user email wont have to be reset since nav.innerHTML automatically goes empty when not logged in
 
@@ -219,6 +286,8 @@ auth.onAuthStateChanged((user) => {
     main.innerHTML = "";
     formWrapper.innerHTML = templates.signupForm;
     nav.innerHTML = "";
+    chats.innerHTML = "";
+    chats.style.display = "none";
   }
 });
 

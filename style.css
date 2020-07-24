@@ -43,6 +43,36 @@ i#delete:hover {
   color: #dc3545;
   background-color: white;
 }
+.chats {
+  flex-direction: column;
+  width: 60%;
+  margin: 0px auto;
+  height: 85vh;
+  background-color: lightslategray;
+  padding: 10px;
+  overflow: scroll;
+}
+.sent,
+.received {
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+div.received {
+  float: left;
+  clear: both;
+  margin-right: auto;
+  background-color: lightblue;
+}
+div.sent {
+  clear: both;
+  float: right;
+  margin-left: auto;
+  background-color: rgb(221, 221, 204);
+}
+#sendMessage input {
+  width: 70%;
+}
 @media only screen and (max-width: 576px) {
   #switchToLogin,
   #switchToSignup {
