@@ -45,7 +45,7 @@ i#delete:hover {
 }
 .chats {
   flex-direction: column;
-  width: 60%;
+  width: 70%;
   margin: 0px auto;
   height: 85vh;
   background-color: lightslategray;
@@ -82,5 +82,9 @@ div.sent {
   }
   span.form-text.text-muted {
     transform: translateY(-7px);
+  }
+  .chats {
+    width: 90%;
+    margin: 0px auto;
   }
 }
