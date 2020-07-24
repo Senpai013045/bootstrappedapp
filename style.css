@@ -45,33 +45,31 @@ i#delete:hover {
 }
 .chats {
   flex-direction: column;
-  width: 70%;
   margin: 0px auto;
   height: 85vh;
-  background-color: lightslategray;
+  /* background-color: lightslategray; */
   padding: 10px;
-  overflow: scroll;
+  overflow-y: scroll;
+  position: relative;
 }
 .sent,
 .received {
   padding: 10px;
   border-radius: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  max-width: 70%;
 }
 div.received {
   float: left;
   clear: both;
   margin-right: auto;
-  background-color: lightblue;
+  /* background-color: lightblue; */
 }
 div.sent {
   clear: both;
   float: right;
   margin-left: auto;
-  background-color: rgb(221, 221, 204);
-}
-#sendMessage input {
-  width: 70%;
+  /* background-color: rgb(221, 221, 204); */
 }
 @media only screen and (max-width: 576px) {
   #switchToLogin,
@@ -86,5 +84,8 @@ div.sent {
   .chats {
     width: 90%;
     margin: 0px auto;
+  }
+  #sendMessage {
+    width: 90%;
   }
 }

@@ -77,9 +77,9 @@ let templates = {
 </li>
     `,
   chats: `
-    <form id="sendMessage">
+    <form id="sendMessage" class="fixed-bottom text-light col-sm-12 col-lg-10 pl-0">
     <div class="input-group">
-    <input type="text" class="form-control" placeholder="chat message">
+    <input type="text" class="form-control" placeholder="chat message" required>
     <button type="submit" class="btn btn-primary">Send</button>
     </div>
     </form>
@@ -148,6 +148,7 @@ auth.onAuthStateChanged((user) => {
       if (e.target.getAttribute("id") === "chatLoader") {
         main.style.display = "none";
         chats.style.display = "flex";
+        chats.scrollTop = chats.scrollHeight;
       }
     });
     //hub switching
@@ -230,18 +231,21 @@ auth.onAuthStateChanged((user) => {
                 console.log(doc.data().displayName);
                 //render this to doc
                 let chatBubble = document.createElement("div");
+                let name = document.createElement("small");
+                name.innerHTML = ``;
                 chatBubble.dataset.id = docID;
+                chatBubble.style.order = `${change.newIndex}`;
 
                 if (data.sender === user.uid) {
-                  chatBubble.classList.add("chat-bubble", "sent");
+                  chatBubble.classList.add("chat-bubble", "sent", "bg-primary");
                 } else {
-                  chatBubble.classList.add("chat-bubble", "received");
+                  chatBubble.classList.add("chat-bubble", "received", "bg-secondary");
                 }
 
                 chatBubble.innerHTML = `
         <span class="message">${data.message}</span>
         <br/>
-        <cite class="float-right">-${doc.data().displayName}</cite>
+        <small>-${doc.data().displayName}</small>
                 
                 `;
                 chats.insertBefore(chatBubble, chats.querySelector("form"));
