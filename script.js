@@ -168,7 +168,7 @@ auth.onAuthStateChanged((user) => {
             // change.doc.data() is the object that has our data
             let docID = change.doc.id;
             let data = change.doc.data();
-            console.log(data.title, change.newIndex);
+            // console.log(data.title, change.newIndex);
             if (!data.time) {
               data.time = null;
             }
@@ -220,7 +220,7 @@ auth.onAuthStateChanged((user) => {
           if (change.type === "added") {
             let docID = change.doc.id;
             let data = change.doc.data();
-            console.log(data.message, change.newIndex);
+            // console.log(data.message, change.newIndex);
             if (!data.time) {
               data.time = null;
             }
@@ -228,7 +228,7 @@ auth.onAuthStateChanged((user) => {
               .doc(data.sender)
               .get()
               .then((doc) => {
-                console.log(doc.data().displayName);
+                // console.log(doc.data().displayName);
                 //render this to doc
                 let chatBubble = document.createElement("div");
                 let name = document.createElement("small");
