@@ -109,10 +109,10 @@ function timeHandler(firebaseTimeStamp) {
 
 auth.onAuthStateChanged((user) => {
   if (user) {
-    main.innerHTML = templates.posts;
-    formWrapper.innerHTML = "";
-    nav.innerHTML = templates.loggedInNav;
-    chats.innerHTML = templates.chats;
+    main.textContent = templates.posts;
+    formWrapper.textContent = "";
+    nav.textContent = templates.loggedInNav;
+    chats.textContent = templates.chats;
     chats.style.display = "none";
     chats.scrollTop = chats.scrollHeight;
     nav.querySelector("#display-email").textContent = user.email;
@@ -135,11 +135,12 @@ auth.onAuthStateChanged((user) => {
             })
             .then((res) => {
               createPost.reset();
-              createPost.querySelector(".error-handler").innerHTML = "";
+              createPost.querySelector(".error-handler").textContent = "";
               $("#modal-post").modal("hide");
             })
             .catch((err) => {
-              createPost.querySelector(".error-handler").innerHTML = err.message;
+              createPost.querySelector(".error-handler").textContent =
+                err.message;
             });
         });
       });
@@ -180,7 +181,7 @@ auth.onAuthStateChanged((user) => {
                 card.classList.add("card", "mb-4");
                 card.dataset.id = docID;
                 card.style.order = -change.newIndex;
-                card.innerHTML = `
+                card.textContent = `
                 <div class="card-header">
                 ${data.title}
                 ${
@@ -206,7 +207,9 @@ auth.onAuthStateChanged((user) => {
               });
           }
           if (change.type === "removed") {
-            let card = document.querySelector(`div[data-id="${change.doc.id}"]`);
+            let card = document.querySelector(
+              `div[data-id="${change.doc.id}"]`
+            );
             main.removeChild(card);
           }
         });
@@ -232,17 +235,21 @@ auth.onAuthStateChanged((user) => {
                 //render this to doc
                 let chatBubble = document.createElement("div");
                 let name = document.createElement("small");
-                name.innerHTML = ``;
+                name.textContent = ``;
                 chatBubble.dataset.id = docID;
                 chatBubble.style.order = `${change.newIndex}`;
 
                 if (data.sender === user.uid) {
                   chatBubble.classList.add("chat-bubble", "sent", "bg-primary");
                 } else {
-                  chatBubble.classList.add("chat-bubble", "received", "bg-secondary");
+                  chatBubble.classList.add(
+                    "chat-bubble",
+                    "received",
+                    "bg-secondary"
+                  );
                 }
 
-                chatBubble.innerHTML = `
+                chatBubble.textContent = `
         <span class="message">${data.message}</span>
         <br/>
         <small>-${doc.data().displayName}</small>
@@ -274,7 +281,7 @@ auth.onAuthStateChanged((user) => {
       }
     });
 
-    //user email wont have to be reset since nav.innerHTML automatically goes empty when not logged in
+    //user email wont have to be reset since nav.textContent automatically goes empty when not logged in
 
     //handle signout
     nav.addEventListener("click", (e) => {
@@ -287,10 +294,10 @@ auth.onAuthStateChanged((user) => {
 
     //make sure to reset on else
   } else {
-    main.innerHTML = "";
-    formWrapper.innerHTML = templates.signupForm;
-    nav.innerHTML = "";
-    chats.innerHTML = "";
+    main.textContent = "";
+    formWrapper.textContent = templates.signupForm;
+    nav.textContent = "";
+    chats.textContent = "";
     chats.style.display = "none";
   }
 });
@@ -298,10 +305,10 @@ auth.onAuthStateChanged((user) => {
 //tabbing the forms
 formWrapper.addEventListener("click", (e) => {
   if (e.target.getAttribute("id") === "switchToLogin") {
-    formWrapper.innerHTML = templates.loginForm;
+    formWrapper.textContent = templates.loginForm;
   }
   if (e.target.getAttribute("id") === "switchToSignup") {
-    formWrapper.innerHTML = templates.signupForm;
+    formWrapper.textContent = templates.signupForm;
   }
 });
 
@@ -311,8 +318,10 @@ formWrapper.addEventListener("submit", (e) => {
   if (e.target.getAttribute("id") === "signup") {
     e.preventDefault();
     //confirm password retype
-    if (e.target["signup-password"].value === e.target["retype-password"].value) {
-      e.target.querySelector(".error-handler").innerHTML = "";
+    if (
+      e.target["signup-password"].value === e.target["retype-password"].value
+    ) {
+      e.target.querySelector(".error-handler").textContent = "";
       //handle signup here
       auth
         .createUserWithEmailAndPassword(
@@ -325,10 +334,11 @@ formWrapper.addEventListener("submit", (e) => {
           });
         })
         .catch((err) => {
-          e.target.querySelector(".error-handler").innerHTML = err.message;
+          e.target.querySelector(".error-handler").textContent = err.message;
         });
     } else {
-      e.target.querySelector(".error-handler").innerHTML = "Password didn't match";
+      e.target.querySelector(".error-handler").textContent =
+        "Password didn't match";
     }
   }
   //login
@@ -336,12 +346,15 @@ formWrapper.addEventListener("submit", (e) => {
     e.preventDefault();
     //handle login here
     auth
-      .signInWithEmailAndPassword(e.target["login-email"].value, e.target["login-password"].value)
+      .signInWithEmailAndPassword(
+        e.target["login-email"].value,
+        e.target["login-password"].value
+      )
       .then((cred) => {
-        e.target.querySelector(".error-handler").innerHTML = "";
+        e.target.querySelector(".error-handler").textContent = "";
       })
       .catch((err) => {
-        e.target.querySelector(".error-handler").innerHTML = err.message;
+        e.target.querySelector(".error-handler").textContent = err.message;
       });
   }
 });
