@@ -109,19 +109,19 @@ function timeHandler(firebaseTimeStamp) {
 
 auth.onAuthStateChanged((user) => {
   if (user) {
-    main.innerText = templates.posts;
-    formWrapper.innerText = "";
-    nav.innerText = templates.loggedInNav;
-    chats.innerText = templates.chats;
+    main.innerHTML = templates.posts;
+    formWrapper.innerHTML = "";
+    nav.innerHTML = templates.loggedInNav;
+    chats.innerHTML = templates.chats;
     chats.style.display = "none";
     chats.scrollTop = chats.scrollHeight;
-    nav.querySelector("#display-email").innerText = user.email;
+    nav.querySelector("#display-email").innerHTML = user.email;
     //handling display name from database
     db.collection("users")
       .doc(user.uid)
       .get()
       .then((doc) => {
-        nav.querySelector("#display-name").innerText = doc.data().displayName;
+        nav.querySelector("#display-name").innerHTML = doc.data().displayName;
         //can handle database handling here as we have access to all data required
         createPost.addEventListener("submit", (e) => {
           e.preventDefault();
@@ -135,11 +135,11 @@ auth.onAuthStateChanged((user) => {
             })
             .then((res) => {
               createPost.reset();
-              createPost.querySelector(".error-handler").innerText = "";
+              createPost.querySelector(".error-handler").innerHTML = "";
               $("#modal-post").modal("hide");
             })
             .catch((err) => {
-              createPost.querySelector(".error-handler").innerText =
+              createPost.querySelector(".error-handler").innerHTML =
                 err.message;
             });
         });
@@ -181,7 +181,7 @@ auth.onAuthStateChanged((user) => {
                 card.classList.add("card", "mb-4");
                 card.dataset.id = docID;
                 card.style.order = -change.newIndex;
-                card.innerText = `
+                card.innerHTML = `
                 <div class="card-header">
                 ${data.title}
                 ${
@@ -235,7 +235,7 @@ auth.onAuthStateChanged((user) => {
                 //render this to doc
                 let chatBubble = document.createElement("div");
                 let name = document.createElement("small");
-                name.innerText = ``;
+                name.innerHTML = ``;
                 chatBubble.dataset.id = docID;
                 chatBubble.style.order = `${change.newIndex}`;
 
@@ -249,7 +249,7 @@ auth.onAuthStateChanged((user) => {
                   );
                 }
 
-                chatBubble.innerText = `
+                chatBubble.innerHTML = `
         <span class="message">${data.message}</span>
         <br/>
         <small>-${doc.data().displayName}</small>
@@ -281,7 +281,7 @@ auth.onAuthStateChanged((user) => {
       }
     });
 
-    //user email wont have to be reset since nav.innerText automatically goes empty when not logged in
+    //user email wont have to be reset since nav.innerHTML automatically goes empty when not logged in
 
     //handle signout
     nav.addEventListener("click", (e) => {
@@ -294,10 +294,10 @@ auth.onAuthStateChanged((user) => {
 
     //make sure to reset on else
   } else {
-    main.innerText = "";
-    formWrapper.innerText = templates.signupForm;
-    nav.innerText = "";
-    chats.innerText = "";
+    main.innerHTML = "";
+    formWrapper.innerHTML = templates.signupForm;
+    nav.innerHTML = "";
+    chats.innerHTML = "";
     chats.style.display = "none";
   }
 });
@@ -305,10 +305,10 @@ auth.onAuthStateChanged((user) => {
 //tabbing the forms
 formWrapper.addEventListener("click", (e) => {
   if (e.target.getAttribute("id") === "switchToLogin") {
-    formWrapper.innerText = templates.loginForm;
+    formWrapper.innerHTML = templates.loginForm;
   }
   if (e.target.getAttribute("id") === "switchToSignup") {
-    formWrapper.innerText = templates.signupForm;
+    formWrapper.innerHTML = templates.signupForm;
   }
 });
 
@@ -321,7 +321,7 @@ formWrapper.addEventListener("submit", (e) => {
     if (
       e.target["signup-password"].value === e.target["retype-password"].value
     ) {
-      e.target.querySelector(".error-handler").innerText = "";
+      e.target.querySelector(".error-handler").innerHTML = "";
       //handle signup here
       auth
         .createUserWithEmailAndPassword(
@@ -334,10 +334,10 @@ formWrapper.addEventListener("submit", (e) => {
           });
         })
         .catch((err) => {
-          e.target.querySelector(".error-handler").innerText = err.message;
+          e.target.querySelector(".error-handler").innerHTML = err.message;
         });
     } else {
-      e.target.querySelector(".error-handler").innerText =
+      e.target.querySelector(".error-handler").innerHTML =
         "Password didn't match";
     }
   }
@@ -351,10 +351,10 @@ formWrapper.addEventListener("submit", (e) => {
         e.target["login-password"].value
       )
       .then((cred) => {
-        e.target.querySelector(".error-handler").innerText = "";
+        e.target.querySelector(".error-handler").innerHTML = "";
       })
       .catch((err) => {
-        e.target.querySelector(".error-handler").innerText = err.message;
+        e.target.querySelector(".error-handler").innerHTML = err.message;
       });
   }
 });
